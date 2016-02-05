@@ -79,7 +79,7 @@ defmodule Canary.Plugs do
     action = get_action(conn)
 
     resource = cond do
-      action in [:index, :new, :create] ->
+      action in [:index, :new, :create] ++ use_model_on_if_needed(opts) ->
         opts[:model]
       true      ->
         fetch_resource(conn, opts)
@@ -246,6 +246,15 @@ defmodule Canary.Plugs do
         %{"params" => conn.params}
       _ ->
         %{}
+    end
+  end
+
+  defp use_model_on_if_needed(opts) do
+    case opts[:use_model_on] do
+      nil ->
+        []
+      models ->
+        models
     end
   end
 end
